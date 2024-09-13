@@ -38,8 +38,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: nandanramdani/fleet-cd-helm
-          ref: main
-          token: ${{ secrets.HELM_TOKEN }}
           path: fleet-cd-helm
 
       - name: Update Helm Chart

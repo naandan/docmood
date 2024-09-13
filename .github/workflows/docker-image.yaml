@@ -8,7 +8,6 @@ on:
 jobs:
   push-docker-image:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -19,24 +18,35 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Get current branch name
-        id: branch_name
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
-      - name: Get repository name
-        id: repo_name
-        run: echo "REPO_NAME=$(echo "${GITHUB_REPOSITORY#*/}" | awk '{print tolower($0)}')" >> $GITHUB_ENV
-
-      - name: Set directory name
-        id: set_directory_name
-        run: echo "DIRECTORY_NAME=doc" >> $GITHUB_ENV
-
-      - name: Set image tag
-        id: set_image_tag
-        run: echo "IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+      - name: Set up environment variables
+        run: |
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "REPO_NAME=$(echo ${GITHUB_REPOSITORY#*/} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "DIRECTORY_NAME=doc" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/${GITHUB_REPOSITORY#*/}:${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: docker build ${{ env.DIRECTORY_NAME }} --file ${{ env.DIRECTORY_NAME }}/Dockerfile --tag ${{ env.IMAGE_TAG }}
 
       - name: Push Docker image to Docker Hub
         run: docker push ${{ env.IMAGE_TAG }}
+
+      - name: Get image digest
+        run: echo "IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ env.IMAGE_TAG }})" >> $GITHUB_ENV
+
+      - name: Clone Helm Repository
+        uses: actions/checkout@v2
+        with:
+          repository: nandanramdani/fleet-cd-helm
+          ref: main
+          token: ${{ secrets.HELM_TOKEN }}
+          path: fleet-cd-helm
+
+      - name: Update Helm Chart
+        run: |
+          sed -i 's|image: .*|image: ${{ env.IMAGE_DIGEST }}|' fleet-cd-helm/erp-doc/values.yaml
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git -C fleet-cd-helm add erp-doc/values.yaml
+          git -C fleet-cd-helm commit -m "Update image digest to ${{ env.IMAGE_DIGEST }}"
+          git -C fleet-cd-helm push

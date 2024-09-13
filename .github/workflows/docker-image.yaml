@@ -9,7 +9,7 @@ jobs:
   push-docker-image:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout main repository
         uses: actions/checkout@v2
 
       - name: Login to Docker Hub
@@ -35,16 +35,26 @@ jobs:
         run: echo "IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ env.IMAGE_TAG }})" >> $GITHUB_ENV
 
       - name: Clone Helm Repository
-        uses: actions/checkout@v2
-        with:
-          repository: nandanramdani/fleet-cd-helm
-          path: fleet-cd-helm
+        run: |
+          git clone https://github.com/nandanramdani/fleet-cd-helm.git fleet-cd-helm
+          if [ $? -ne 0 ]; then
+            echo "Failed to clone the Helm repository"
+            exit 1
+          fi
+          cd fleet-cd-helm
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
 
       - name: Update Helm Chart
         run: |
-          sed -i 's|image: .*|image: ${{ env.IMAGE_DIGEST }}|' fleet-cd-helm/erp-doc/values.yaml
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git -C fleet-cd-helm add erp-doc/values.yaml
-          git -C fleet-cd-helm commit -m "Update image digest to ${{ env.IMAGE_DIGEST }}"
-          git -C fleet-cd-helm push
+          cd fleet-cd-helm
+          if [ ! -f erp-doc/values.yaml ]; then
+            echo "erp-doc/values.yaml not found in the Helm repository"
+            exit 1
+          fi
+          sed -i 's|image: .*|image: ${{ env.IMAGE_DIGEST }}|' erp-doc/values.yaml
+          git add erp-doc/values.yaml
+          git commit -m "Update image digest to ${{ env.IMAGE_DIGEST }}"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}

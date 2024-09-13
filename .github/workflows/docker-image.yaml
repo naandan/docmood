@@ -34,27 +34,20 @@ jobs:
       - name: Get image digest
         run: echo "IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ env.IMAGE_TAG }})" >> $GITHUB_ENV
 
-      # - name: Clone Helm Repository
-      #   run: |
-      #     git clone https://github.com/naandan/fleet-cd-helm.git fleet-cd-helm
-      #     if [ $? -ne 0 ]; then
-      #       echo "Failed to clone the Helm repository"
-      #       exit 1
-      #     fi
-      #     cd fleet-cd-helm
-      #     git config user.email "github-actions@github.com"
-      #     git config user.name "GitHub Actions"
+      - name: Clone Helm Repository
+        run: |
+          git clone https://github.com/naandan/docmood-helm.git docmood-helm
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          ls -l
 
-      # - name: Update Helm Chart
-      #   run: |
-      #     cd fleet-cd-helm
-      #     if [ ! -f erp-doc/values.yaml ]; then
-      #       echo "erp-doc/values.yaml not found in the Helm repository"
-      #       exit 1
-      #     fi
-      #     sed -i 's|image: .*|image: ${{ env.IMAGE_DIGEST }}|' erp-doc/values.yaml
-      #     git add erp-doc/values.yaml
-      #     git commit -m "Update image digest to ${{ env.IMAGE_DIGEST }}"
-      #     git push origin main
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+      - name: Update Helm Chart
+        run: |
+          cd docmood-helm
+          ls -l
+          sed -i 's|tag: .*|tag: ${{ env.IMAGE_DIGEST }}|' docmood/values.yaml
+          git add docmood/values.yaml
+          git commit -m "Update image digest to ${{ env.IMAGE_DIGEST }}"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}

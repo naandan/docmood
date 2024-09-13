@@ -1,0 +1,8 @@
+{
+    "label": "Invoice Deduction",
+    "position": 1,
+    "link": {
+        "type": "generated-index",
+        "description": "Invoice Deduction is a business process that allows businesses to deduct certain expenses from their invoices. Sales Invoice or Purchase Invoice "
+    }
+}

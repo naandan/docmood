@@ -48,4 +48,4 @@ jobs:
             || echo "appUpdateVersion: ${{ env.APP_VERSION }}" >> docmood/values.yaml
           git add docmood/values.yaml
           git commit -m "Update appUpdateVersion to ${{ env.APP_VERSION }}"
-          git push https://x-access-token:${{ secrets.GHCR_TOKEN }}@github.com/naandan/docmood-helm.git
+          git push https://x-access-token:${{ secrets.GHCR_TOKEN }}@github.com/naandan/docmood-helm.git main

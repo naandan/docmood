@@ -48,7 +48,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/naandan/docmood/tree/main/doc',
         },
         blog:false,
         // blog: {
@@ -79,9 +79,9 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'My Site',
+        title: 'DocMood',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'DocMood Logo',
           src: 'img/logo.svg',
         },
         items: [
@@ -93,7 +93,7 @@ const config = {
           // },
           // { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/naandan/docmood',
             label: 'GitHub',
             position: 'right',
           },

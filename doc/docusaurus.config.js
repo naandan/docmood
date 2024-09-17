@@ -78,6 +78,9 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
+      mermaid: {
+        theme: {light: 'neutral', dark: 'forest'},
+      },
       navbar: {
         title: 'DocMood',
         logo: {

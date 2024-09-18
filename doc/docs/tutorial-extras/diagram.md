@@ -34,3 +34,13 @@ graph TD
     A[Start] --> B[Parallel]
     B --> C[End]
 ```
+
+## Example Complex Diagram
+```mermaid
+graph TD
+    A[Start] --> B[Process]
+    B --> C[Decision]
+    C -->|Yes| D[Loop]
+    C -->|No| E[End]
+    D --> F[Process]
+    F --> D

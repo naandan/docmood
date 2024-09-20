@@ -76,6 +76,17 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      algolia: {
+        appId: 'OTO5P32NSD',
+        apiKey: 'b65891f91d2257cef4833f71aa5fd171',
+        indexName: 'docmood',
+        contextualSearch: true,
+        externalUrlRegex: '^(https?:)?//',
+        replaceSearchResultPathname: {
+          from: '/docs/',
+          to: '/',
+        },
+      },
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       mermaid: {

@@ -77,9 +77,9 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       algolia: {
-        appId: 'OTO5P32NSD',
-        apiKey: 'b65891f91d2257cef4833f71aa5fd171',
-        indexName: 'docmood',
+        appId: 'TC3J9JNCIB',
+        apiKey: '0b8669530a0167ec04f79bdeb4cdd528',
+        indexName: 'mood-sti-group-biz',
         contextualSearch: true,
         externalUrlRegex: '^(https?:)?//',
         replaceSearchResultPathname: {
